@@ -1,4 +1,4 @@
-import jwt from "jsonwebtoken"
+import jwt, { JwtPayload } from "jsonwebtoken"
 import { IUserDocument } from "../models/user.model"
 
 export interface ITokenPayload {
@@ -15,3 +15,8 @@ export const generateToken = (user : IUserDocument) : string =>{
         { expiresIn : '1d'}
     );
 };
+
+export const verifyToken = function(token : string ) : ITokenPayload{
+    return jwt.verify(token, process.env.JWT_SECRET as string) as ITokenPayload;
+    
+}
