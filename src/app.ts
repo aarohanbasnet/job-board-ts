@@ -4,6 +4,7 @@ import dotenv from 'dotenv';
 import connectDB from "./config/dbconnection";
 import authRoutes from "./routes/auth.route";
 import testRouter from "./routes/testroute"
+import jobRouter from "./routes/job.routes"
 
 
 
@@ -20,5 +21,6 @@ app.use(testRouter);
 
 //routes
 app.use('/api/v1/auth', authRoutes);
+app.use('/api/v1/jobs', jobRouter);
 
 export default app;

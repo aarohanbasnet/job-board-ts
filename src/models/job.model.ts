@@ -6,7 +6,7 @@ export interface IJobDocument extends Document {
     level : "Junior" | "Midlevel" | "Senior" | "Intern"
     workType : "Full Time" | "Part Time" | "Contract"
     hourlyRate : number
-    postedBy : mongoose.Types.ObjectId
+    postedBy : mongoose.Types.ObjectId | string
     isActive : boolean
 }
 
