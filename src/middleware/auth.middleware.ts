@@ -1,8 +1,9 @@
 import {Request, Response, NextFunction } from "express";
 import { ITokenPayload, verifyToken } from "../utils/generateToken";
 import { JsonWebTokenError, TokenExpiredError } from "jsonwebtoken";
+import { UserRole } from "../models/user.model";
 
-interface customRequest extends Request{
+export interface customRequest extends Request{
     user? : ITokenPayload;
 }
 
@@ -51,7 +52,7 @@ export const isLoggedIn = function(req : customRequest, res: Response, next : Ne
     }
 };
 
-export const authorizeRoles = function (...allowedRoles : string[]){
+export const authorizeRoles = function (...allowedRoles : UserRole[]){
  return (req : customRequest, res : Response, next : NextFunction) =>{ 
     //first isLoggedin middleware should run else req.user will be undefined and we cannot access the properties
     if(!req.user){
