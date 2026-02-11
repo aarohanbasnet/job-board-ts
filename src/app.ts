@@ -3,8 +3,10 @@ import cookieParser from "cookie-parser";
 import dotenv from 'dotenv';
 import connectDB from "./config/dbconnection";
 import authRoutes from "./routes/auth.route";
-import testRouter from "./routes/testroute"
-import jobRouter from "./routes/job.routes"
+import testRouter from "./routes/testroute";
+import jobRouter from "./routes/job.routes";
+import applicationRouter from "./routes/application.route"
+
 
 
 
@@ -22,5 +24,8 @@ app.use(testRouter);
 //routes
 app.use('/api/v1/auth', authRoutes);
 app.use('/api/v1/jobs', jobRouter);
+
+//application routes
+app.use('/api/v1/application', applicationRouter);
 
 export default app;

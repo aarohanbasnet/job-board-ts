@@ -21,7 +21,8 @@ export const register = async function(req : Request, res: Response){
         const user = await userModel.create({
              name,
              email,
-            password : hashedPassword
+            password : hashedPassword,
+            role
         });
 
         const token = generateToken(user);
@@ -70,7 +71,9 @@ export const login = async function(req : Request, res : Response){
 
     return res.status(201).json({
         success : true,
-        message : "Logged in successfully"
+        message : "Logged in successfully",
+        token
+        
     })
 
     } catch (error){

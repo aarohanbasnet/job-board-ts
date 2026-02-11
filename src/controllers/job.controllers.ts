@@ -2,7 +2,7 @@ import { Response } from "express";
 import { customRequest } from "../middleware/auth.middleware";
 import { JobModel } from "../models/job.model";
 import { userModel } from "../models/user.model";
-import { IJobDocument } from "../models/job.model";
+import { IJob } from "../models/job.model";
 import mongoose from "mongoose";
 
 export const createJob = async function(req : customRequest, res : Response){
@@ -23,7 +23,7 @@ export const createJob = async function(req : customRequest, res : Response){
             })
         };
 
-        const newJob : IJobDocument = await JobModel.create({
+        const newJob : IJob = await JobModel.create({
             title,
             company,
             level,
@@ -56,12 +56,15 @@ export const editJobs = async function(req : customRequest, res : Response){
     const jobId = req.params.jobId;
     const adminId = req.user?.id;
     const updatedData = req.body;
+    const filter = {
+        _id : jobId,
+        postedBy : adminId
+    } as any
 
     try{
 
-        const updatedJob = await JobModel.findOneAndUpdate({
-            _id : jobId, postedBy : adminId
-        }, updatedData,
+        const updatedJob = await JobModel.findOneAndUpdate(
+        filter, updatedData,
         {
             new : true,
             runValidators : true

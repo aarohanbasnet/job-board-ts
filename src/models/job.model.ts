@@ -1,16 +1,17 @@
-import mongoose, {Schema, Document} from "mongoose";
+import mongoose, {mongo, Mongoose, Schema} from "mongoose";
 
-export interface IJobDocument extends Document {
+export interface IJob{
+    _id? : mongoose.Types.ObjectId
     title : string
     company : string
     level : "Junior" | "Midlevel" | "Senior" | "Intern"
     workType : "Full Time" | "Part Time" | "Contract"
     hourlyRate : number
-    postedBy : mongoose.Types.ObjectId | string
+    postedBy : mongoose.Types.ObjectId
     isActive : boolean
 }
 
-const JobSechema = new  Schema<IJobDocument>({
+const JobSechema = new  Schema<IJob>({
     title : {type : String, required : true},
     company : {type : String, required : true},
     level : {type : String, enum : ["Junior", "Midlevel", "Senior", "Intern"], required : true},
@@ -20,4 +21,4 @@ const JobSechema = new  Schema<IJobDocument>({
     isActive : {type : Boolean, default : true}
 }, {timestamps : true});
 
-export const JobModel = mongoose.model<IJobDocument>("Job", JobSechema)
+export const JobModel = mongoose.model<IJob>("Job", JobSechema);
