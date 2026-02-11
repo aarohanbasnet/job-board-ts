@@ -3,7 +3,6 @@ import { customRequest } from "../middleware/auth.middleware";
 import { JobModel } from "../models/job.model";
 import { userModel } from "../models/user.model";
 import { IJobDocument } from "../models/job.model";
-import { rmSync } from "node:fs";
 import mongoose from "mongoose";
 
 export const createJob = async function(req : customRequest, res : Response){
@@ -44,6 +43,47 @@ export const createJob = async function(req : customRequest, res : Response){
 
 
     } catch(error){
+        if(error instanceof Error){
+            return res.status(500).json({
+                success : false,
+                message : error.message
+            })
+        }
+    }
+};
+
+export const editJobs = async function(req : customRequest, res : Response){
+    const jobId = req.params.jobId;
+    const adminId = req.user?.id;
+    const updatedData = req.body;
+
+    try{
+
+        const updatedJob = await JobModel.findOneAndUpdate({
+            _id : jobId, postedBy : adminId
+        }, updatedData,
+        {
+            new : true,
+            runValidators : true
+        }
+     );
+
+     if(!updatedJob){
+        return res.status(404).json({
+            success : false,
+            message : "Job not found or you are not authorized to edit it"
+        });
+     }
+
+     return res.status(200).json({
+        success : true,
+        message : "Job updated successfully",
+        data : {
+            job : updatedJob
+        }
+     });
+
+    }catch(error){
         if(error instanceof Error){
             return res.status(500).json({
                 success : false,
