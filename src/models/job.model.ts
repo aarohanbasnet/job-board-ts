@@ -9,6 +9,7 @@ export interface IJob{
     hourlyRate : number
     postedBy : mongoose.Types.ObjectId
     isActive : boolean
+    isDeleted: boolean
 }
 
 const JobSechema = new  Schema<IJob>({
@@ -18,7 +19,11 @@ const JobSechema = new  Schema<IJob>({
     workType : {type : String, required : true},
     hourlyRate : {type : Number, required : true},
     postedBy : {type : mongoose.Schema.Types.ObjectId, ref: "User", required : true},
-    isActive : {type : Boolean, default : true}
+    isActive : {type : Boolean, default : true},
+    isDeleted: {
+        type: Boolean,
+        default: false
+    }
 }, {timestamps : true});
 
 export const JobModel = mongoose.model<IJob>("Job", JobSechema);
