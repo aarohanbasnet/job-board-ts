@@ -68,7 +68,8 @@ export const  myApplication = async function( req : customRequest, res : Respons
         const applications = await ApplicationModel.find({user : userId})
         .populate({
             path : 'job',
-            select : 'title company level workType'
+            select : 'title company level workType',
+            match : {isDeleted : false} //soft deletion 
         })
         .sort("-createdAt"); //newest application first
 
