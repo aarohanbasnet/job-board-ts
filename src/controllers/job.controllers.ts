@@ -1,9 +1,14 @@
 import { Response } from "express";
 import { customRequest } from "../middleware/auth.middleware";
 import { JobModel } from "../models/job.model";
-import { userModel } from "../models/user.model";
 import { IJob } from "../models/job.model";
 import mongoose from "mongoose";
+import { ApplicationModel } from "../models/application.model";
+
+interface IJobQuery {
+    postedBy : string,
+    isDeleted? : boolean
+}
 
 export const createJob = async function(req : customRequest, res : Response){
  const {title, company, level, workType, hourlyRate, postedBy, isActive} = req.body;
@@ -96,3 +101,76 @@ export const editJobs = async function(req : customRequest, res : Response){
     }
 }
 
+export const deleteJob = async function(req : customRequest, res : Response){
+    const {id} = req.params;
+    const adminId = req.user?.id;
+try{
+
+    if(!adminId || !id){
+        return res.status(401).json({
+            success : false,
+            message :  "Unauthorized"
+        });
+    }
+
+    const job = await JobModel.findOneAndUpdate(
+        {_id : id, postedBy : adminId},
+        {isDeleted : true, isActive : false},
+        {new : true});
+
+    if(!job){
+        return res.status(404).json({
+            success : false,
+            message : "Job not found or you are not authorized"
+        });
+    }
+
+    return res.status(200).json({
+        success : true,
+        message : `The job ${job.title} at ${job.company} has been archived succesfully`
+    });
+
+    
+} catch (error){
+    if(error instanceof Error){
+        return res.status(500).json({
+            success : false,
+            message : error.message
+        });
+    }
+}
+
+};
+
+export const getMyPostedJobs = async function(req: customRequest, res: Response) {
+    try {
+        const adminId = req.user?.id;
+        const { showDeleted } = req.query;
+
+        if (!adminId) {
+            return res.status(401).json({ success: false, message: "Unauthorized" });
+        }
+
+        const query: IJobQuery = { postedBy: adminId };
+
+        if (showDeleted !== "true") {
+            query.isDeleted = false;
+        }
+
+        const jobs = await JobModel.find(query).sort("-createdAt");
+
+        return res.status(200).json({
+            success: true,
+            count: jobs.length,
+            message: showDeleted === "true" 
+                ? "Showing all your posts (including archived)" 
+                : "Showing your active posts",
+            data: jobs
+        });
+
+    } catch (error) {
+        if (error instanceof Error) {
+            return res.status(500).json({ success: false, message: error.message });
+        }
+    }
+};
