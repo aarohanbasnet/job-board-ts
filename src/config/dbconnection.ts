@@ -5,7 +5,7 @@ const connectDB = async() : Promise<void> =>{
     try{
         const URI = process.env.MONGO_URI;
         if(!URI){
-            console.error("Error : MOngoURI is missing from .env file");
+            console.error("Error : MongoURI is missing from .env file");
             process.exit(1);
         }; 
     
